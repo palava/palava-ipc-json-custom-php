@@ -1,0 +1,53 @@
+$generator.includeFile("php_header")
+
+#foreach($rootPkg in $generator.getRootPackages())
+#set ($name = $rootPkg.getFullName().replace(".", "__"))
+require('IPCStub_$generator.getName()___${name}.php');
+#end
+
+class IPCStubs_$generator.getName() {
+
+    /**
+     * @var Palava
+     */
+    private $_palava;
+
+    // *** root packages ***
+
+#foreach($rootPkg in $generator.getRootPackages())
+    /**
+     * @var IPCStub_$generator.getName()___$rootPkg.getFullName().replace(".", "__")
+     */
+    public $$rootPkg.getName();
+
+#end
+
+
+    // *** aliases ***
+
+#foreach($alias in $generator.getAliases().entrySet())
+    /**
+     * @var IPCStub_${generator.getName()}___${alias.getValue().replace(".", "__")}
+     */
+    public $$alias.getKey();
+#end
+
+    public function __construct(Palava $_palava) {
+        if (!isset($_palava) || is_null($_palava)) {
+            throw new Exception("required palava instance not given");
+        }
+        $this->_palava = $_palava;
+#foreach($rootPkg in $generator.getRootPackages())
+        $this->$rootPkg.getName() = new IPCStub_$generator.getName()___$rootPkg.getFullName().replace(".", "__")($_palava);
+#end
+#foreach($alias in $generator.getAliases().entrySet())
+        $this->$alias.getKey() = $this->$alias.getValue().replace(".", "->");
+#end
+    }
+}
+
+#foreach($rootPkg in $generator.getRootPackages())
+#set ($name = $rootPkg.getFullName().replace(".", "__"))
+$generator.generateFile("IPCStub_$generator.getName()___${name}.php", "IPCStub", $rootPkg)
+#end
+$generator.includeFile("php_footer")

@@ -1,0 +1,111 @@
+$generator.includeFile("php_header")
+
+#foreach($pkg in $args.getPackages())
+#set ($name = $pkg.getFullName().replace(".", "__"))
+require('IPCStub_$generator.getName()___${name}.php');
+#end
+
+// an impossible value for evaluate optional parameters
+#set ($classNormalized = $args.getFullName().replace(".", "__"))
+#set ($undefinedValue = "IPCStub_${generator.getName()}__${classNormalized}__Undefined_Salt38hLNXwhlieHUHAKuk3k4ha8348l")
+define('$undefinedValue', '$undefinedValue');
+
+
+class IPCStub_$generator.getName()___$classNormalized {
+
+    /**
+     * @var Palava
+     */
+    private $_palava;
+
+#foreach($pkg in $args.getPackages())
+    /**
+     * @var IPCStub_$generator.getName()___$pkg.getFullName().replace(".", "__")
+     */
+    public $$pkg.getName();
+
+#end
+
+    public function __construct(Palava $_palava) {
+        $this->_palava = $_palava;
+#foreach($pkg in $args.getPackages())
+        $this->$pkg.getName() = new IPCStub_$generator.getName()___$pkg.getFullName().replace(".", "__")($_palava);
+#end
+    }
+
+#foreach($command in $args.getCommands())
+#if ($command.getMeta().hasMetaInformations())
+    /**
+#if ($command.getMeta().getDescription() != "")
+#foreach($line in $command.getMeta().getDescription().trim().split("\n"))
+     * $line.trim()
+#end
+     *
+#end
+#foreach ($param in $command.getMeta().getParams())
+#if ($param.optional())
+     * @param mixed $param.name() (OPTIONAL) $param.description() [default: $param.defaultValue()]
+#else
+     * @param mixed $param.name() $param.description()
+#end
+#end
+     * @return array#foreach ($returns in $command.getMeta().getReturns()) $returns.name(): $returns.description(); #end
+
+#foreach ($throws in $command.getMeta().getThrows())
+     * @throws $throws.name().getName() $throws.description()
+#end
+#if ($command.getMeta().isDeprecated())
+     * @deprecated
+#end
+     */
+#end
+    public function ${command.getName().substring(0, 1).toLowerCase()}${command.getName().substring(1)}(
+#if ($command.getMeta().hasMetaInformations())
+#set ($first = true)
+#foreach ($param in $command.getMeta().getParams())
+#if ($first == false)
+            ,
+#else
+#set ($first = false)
+#end
+#if ($param.optional())
+            $$param.name() = $undefinedValue
+#else
+            $$param.name()
+#end
+#end
+#else
+            $params
+#end
+        )
+    {
+#if ($command.getMeta().hasMetaInformations())
+        $params = array();
+#foreach ($param in $command.getMeta().getParams())
+#if ($param.optional() == false)
+        if (!isset($$param.name())) {
+            throw new Exception("required parameter '$param.name()' not given");
+        } else {
+            $params['$param.name()'] = $$param.name();
+        }
+#else
+        if ($$param.name() !== $undefinedValue) {
+            $params['$param.name()'] = $$param.name();
+        }
+#end
+#end
+#else
+        if (!isset($params) || !is_array($params)) {
+            throw new Exception("parameter has to be an array");
+        }
+#end
+        return $this->_palava->call("${command.getFullName()}", $params);
+    }
+
+#end
+}
+#foreach($pkg in $args.getPackages())
+#set ($name = $pkg.getFullName().replace(".", "__"))
+$generator.generateFile("IPCStub_$generator.getName()___${name}.php", "IPCStub", $pkg)
+#end
+$generator.includeFile("php_footer")
