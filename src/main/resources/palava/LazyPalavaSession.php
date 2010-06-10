@@ -75,7 +75,7 @@ class LazyPalavaSession extends AbstractPalavaSession {
         return $this->data;
     }
     
-    public function get($key = NULL) {
+    public function &get($key = NULL) {
         $this->checkNotNull($key, 'Key');
         $this->preload();
         return $this->contains($key) ? $this->data[$key] : NULL;

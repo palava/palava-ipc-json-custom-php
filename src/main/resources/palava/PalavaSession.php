@@ -95,7 +95,7 @@ interface PalavaSession extends ArrayAccess, Iterator, Countable {
      *         for the specified key
      * @throws PalavaException if key is null
      */
-    public function get($key = NULL);
+    public function &get($key = NULL);
     
     /**
      * Provides all keys currently present in this session.

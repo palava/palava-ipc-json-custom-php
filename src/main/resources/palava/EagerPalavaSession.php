@@ -68,7 +68,7 @@ class EagerPalavaSession extends AbstractPalavaSession {
         return $result['entries'];
     }
     
-    public function get($key = NULL) {
+    public function &get($key = NULL) {
         $this->checkNotNull($key, 'Key');
         $result = $this->palava->call('de.cosmocode.palava.ipc.session.Get', array(
             'keys' => array($key),
