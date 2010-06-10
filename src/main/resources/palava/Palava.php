@@ -23,6 +23,7 @@ require('PalavaParseException.php');
 require('PalavaSession.php');
 require('LazyPalavaSession.php');
 require('EagerPalavaSession.php');
+require('NativePalavaSession.php');
 
 /**
  * Palava IPC PHP JSON Connector Client implementation.
@@ -122,6 +123,10 @@ class Palava {
 		        }
 		        case PalavaSession::EAGER: {
 		            $this->session = new EagerPalavaSession($this, $namespace);
+		            break;
+		        }
+                case PalavaSession::NATIVE: {
+		            $this->session = new NativePalavaSession($this, $namespace);
 		            break;
 		        }
 		        default: {

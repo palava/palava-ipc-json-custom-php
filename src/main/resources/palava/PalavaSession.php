@@ -26,6 +26,7 @@
  * @see Countable
  * @since 1.0
  * @author Willi Schoenborn
+ * @author Tobias Sarnowski
  */
 interface PalavaSession extends ArrayAccess, Iterator, Countable {
 
@@ -42,6 +43,14 @@ interface PalavaSession extends ArrayAccess, Iterator, Countable {
      * to the remote session will be visible instantly.
      */
     const EAGER = 'eager';
+
+    /**
+     * The session data will be fetched from the backend at
+     * start and be pushed back to the backend at the end.
+     * Changes in the remote session won't be visible until
+     * both sessions will be synchronized.
+     */
+    const NATIVE = 'native';
     
     /**
      * Pushes local changes to remote.
