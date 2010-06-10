@@ -39,14 +39,19 @@ class NativePalavaSession extends AbstractPalavaSession {
      */
     private $namespace = NULL;
 
-    
-    private $removals = array();
+    /**
+     * keys, contained in the session to identify removed keys afterwards
+     *
+     * @var array
+     */
+    private $originals = array();
     
     public function NativePalavaSession(Palava $palava = NULL, $namespace = NULL) {
         $this->palava = $this->checkNotNull($palava, 'Palava');
         $this->namespace = $namespace;
 
         $this->synchronize(PalavaSession::PULL);
+        $this->originals = array_keys($_SESSION);
     }
 
     public function useGlobally() {
@@ -74,16 +79,11 @@ class NativePalavaSession extends AbstractPalavaSession {
     public function remove($key = NULL) {
         $this->checkNotNull($key, 'Key');
         unset($_SESSION[$key]);
-        $this->removals[] = $key;
     }
 
     public function set($key = NULL, $value = NULL) {
         $this->checkNotNull($key, 'Key');
         $_SESSION[$key] = $value;
-        $index = array_search($key, $this->removals);
-        if ($index) {
-            unset($this->removals[$index]);
-        }
     }
 
     public function synchronize($mode = PalavaSession::PUSH) {
@@ -112,13 +112,20 @@ class NativePalavaSession extends AbstractPalavaSession {
     }
     
     private function push() {
-        if (count($this->removals) > 0) {
+        // remove old keys
+        $removed = array();
+        foreach ($this->originals as $original) {
+            if (!isset($_SESSION[$original])) {
+                $removed[] = $original;
+            }
+        }
+        if (count($removed) > 0) {
             $this->palava->call('de.cosmocode.palava.ipc.session.Remove', array(
-                'keys' => $this->removals,
+                'keys' => $removed,
                 'namespace' => $this->namespace
             ));
-            $this->removals = array();
         }
+        $this->originals = array_keys($_SESSION);
         
         // initialized, but empty? no need to push!
         if (count($_SESSION) == 0) return;
