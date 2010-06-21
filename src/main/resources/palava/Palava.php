@@ -188,7 +188,7 @@ class Palava {
         } else {
             $request_uri = 'http://';
         }
-        $request_uri += $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $request_uri .= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
 		// build request
 		$request = array();
@@ -197,7 +197,7 @@ class Palava {
 		$request[Palava::$PKEY_COMMAND] = $command;
 		$request[Palava::$PKEY_META] = array(
             'identifier' => $_SERVER['REMOTE_ADDR'],
-            'request_uri' => $request_uri,
+            'request_uri' => $request_uri
         );
 		$request[Palava::$PKEY_ARGUMENTS] = $arguments;
 
