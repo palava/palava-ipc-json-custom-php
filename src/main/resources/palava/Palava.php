@@ -24,6 +24,7 @@ require('PalavaSession.php');
 require('LazyPalavaSession.php');
 require('EagerPalavaSession.php');
 require('NativePalavaSession.php');
+require('PalavaStatistics.php');
 
 /**
  * Palava IPC PHP JSON Connector Client implementation.
@@ -203,6 +204,8 @@ class Palava {
 
 		// send it
 		$json = json_encode($request);
+
+        $call_start = microtime(true);
 		if (!@fwrite($this->socket, $json)) {
 			throw new PalavaConnectionException("cannot send request");
 		}
@@ -248,6 +251,7 @@ class Palava {
 				break;
 			}
 		}
+        PalavaStatistics::logCall($command, microtime(true) - $call_start);
 		if (!$json_completed) {
 			throw new PalavaConnectionException("cannot read response: ".$buffer);
 		}
