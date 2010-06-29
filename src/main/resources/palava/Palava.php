@@ -286,8 +286,10 @@ class Palava {
 		if ($this->socket === NULL) return;
 		if ($this->session !== NULL) {
 			$this->session->synchronize();
+            $this->session = NULL;
 		}
 		@fclose($this->socket);
+        $this->socket = NULL;
 	}
 	
 }
