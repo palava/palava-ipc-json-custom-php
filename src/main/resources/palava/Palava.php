@@ -164,6 +164,16 @@ class Palava {
         $this->timeout = $timeout === NULL ? ini_get("default_socket_timeout") : $timeout;
 	}
 
+    private function getUserIp() {
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else if (isset($_SERVER['HTTP_X_REAL_IP']) && !empty($_SERVER['HTTP_X_REAL_IP'])) {
+            return $_SERVER['HTTP_X_REAL_IP'];
+        } else {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+    }
+
 	public function call($command, $arguments = null) {
 		// not yet connected?
 		if ($this->socket === NULL) {
@@ -197,7 +207,7 @@ class Palava {
 		$request[Palava::$PKEY_SESSION] = $this->sessionId;
 		$request[Palava::$PKEY_COMMAND] = $command;
 		$request[Palava::$PKEY_META] = array(
-            'identifier' => $_SERVER['REMOTE_ADDR'],
+            'identifier' => $this->getUserIp(),
             'request_uri' => $request_uri
         );
 		$request[Palava::$PKEY_ARGUMENTS] = $arguments;
