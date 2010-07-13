@@ -71,20 +71,22 @@ class Palava {
 	 */
 	private $session = NULL;
 
-	public function __construct($host, $port, $session_id = null) {
+	public function __construct($host, $port, $session_id = NULL) {
 		$this->host = $host;
 		$this->port = $port;
 		$this->sessionKey = Palava::$SESSION_KEY;
         $this->cookie_path = Palava::$COOKIE_PATH;
 
-        if (is_null($session_id)) {
-		    if (isset($_COOKIE[$this->sessionKey])) {
+        if ($session_id === NULL) {
+		    if (array_key_exists($this->sessionKey, $_COOKIE)) {
 			    $this->sessionId = $_COOKIE[$this->sessionKey];
 		    }
-            if (isset($_GET[$this->sessionKey])) {
+		    // GET takes precedence over COOKIE
+            if (array_key_exists($this->sessionKey, $_GET)) {
                 $this->sessionId = $_GET[$this->sessionKey];
             }
-            if (isset($_POST[$this->sessionKey])) {
+            // POST takes precedence over GET
+            if (array_key_exists($this->sessionKey, $_POST)) {
                 $this->sessionId = $_POST[$this->sessionKey];
             }
         } else {
@@ -131,7 +133,7 @@ class Palava {
 		            break;
 		        }
 		        default: {
-		            throw new PalavaSession("Unknown mode $mode");
+		            throw new PalavaException("Unknown mode $mode");
 		        }
 		    }
 		}
@@ -149,8 +151,8 @@ class Palava {
 		$this->getSession($mode, $namespace)->useGlobally();
 	}
 	
-	public function connect($timeout = null) {
-		if (is_null($timeout)) {
+	public function connect($timeout = NULL) {
+		if ($timeout === NULL) {
 			$timeout = ini_get("default_socket_timeout");
 		}
 		// connect!
@@ -187,14 +189,14 @@ class Palava {
 		if (!is_string($command)) {
 			throw new PalavaArgumentsException("invalid command name");
 		}
-		if (is_null($arguments) or empty($arguments)) {
+		if (empty($arguments)) {
             $arguments = new stdclass();
 		} else if (!is_array($arguments) && !($arguments instanceof stdclass)) {
 			throw new PalavaArgumentsException("arguments invalid; array expected");
 		}
 
         // request uri
-        if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') {
+        if (array_key_exists('HTTPS', $_SERVER) && strtolower($_SERVER['HTTPS']) == 'on') {
             $request_uri = 'https://';
         } else {
             $request_uri = 'http://';
@@ -284,7 +286,7 @@ class Palava {
 		}
 
 		// return result
-		if (isset($response[Palava::$PKEY_RESULT])) {
+		if (array_key_exists(Palava::$PKEY_RESULT, $response)) {
 			return $response[Palava::$PKEY_RESULT];
 		} else {
 			throw new PalavaExecutionException($response[Palava::$PKEY_EXCEPTION]);
