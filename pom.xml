@@ -18,4 +18,22 @@
         <developerConnection>scm:svn:https://palava.svn.cosmocode.de/palava-ipc-json-custom-php/trunk</developerConnection>
     </scm>
 
+    <dependencies>
+        <dependency>
+            <groupId>de.cosmocode.palava</groupId>
+            <artifactId>palava-ipc</artifactId>
+            <version>[1,2)</version>
+        </dependency>
+        <dependency>
+            <groupId>de.cosmocode.palava</groupId>
+            <artifactId>palava-ipc-cache</artifactId>
+            <version>[2,3)</version>
+        </dependency>
+        <dependency>
+            <groupId>de.cosmocode</groupId>
+            <artifactId>cosmocode-commons</artifactId>
+            <version>[1.9,2)</version>
+        </dependency>
+    </dependencies>
+
 </project>
