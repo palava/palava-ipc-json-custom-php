@@ -18,7 +18,8 @@ package de.cosmocode.palava.ipc.json.custom.php.explorer;
 
 import com.google.common.base.Functions;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Sets;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import de.cosmocode.collections.utility.UtilityList;
 import de.cosmocode.commons.reflect.Classpath;
@@ -28,11 +29,11 @@ import de.cosmocode.palava.ipc.IpcCall;
 import de.cosmocode.palava.ipc.IpcCommand;
 import de.cosmocode.palava.ipc.IpcCommandExecutionException;
 import de.cosmocode.palava.ipc.cache.Cached;
+import de.cosmocode.rendering.Renderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Tobias Sarnowski
@@ -42,22 +43,35 @@ import java.util.Set;
 @IpcCommand.Description("Returns a list of all commands available in the JVM.")
 @IpcCommand.Param(name = "packages", description = "a list of packages to search in")
 @IpcCommand.Return(name = "commands", description = "a list of all commands")
-final class Commands implements IpcCommand {
+public final class Commands implements IpcCommand {
     private static final Logger LOG = LoggerFactory.getLogger(Commands.class);
+
+    private static final CommandRenderer COMMAND_RENDERER = new CommandRenderer();
+
+    private final Provider<Renderer> rendererProvider;
+
+
+    @Inject
+    Commands(Provider<Renderer> rendererProvider) {
+        this.rendererProvider = rendererProvider;
+    }
 
     @Override
     public void execute(IpcCall call, Map<String, Object> result) throws IpcCommandExecutionException {
         UtilityList<Object> packages = call.getArguments().getList("packages");
 
+        Renderer renderer = rendererProvider.get();
+
         Classpath cp = Reflection.defaultClasspath();
         Packages pkgs = cp.restrictTo(Iterables.transform(packages, Functions.toStringFunction()));
 
-        Set<Class> commands = Sets.newHashSet();
 
-        for (Class cls: pkgs.subclassesOf(IpcCommand.class)) {
-            commands.add(cls);
+        renderer.list();
+        for (Class<? extends IpcCommand> command: pkgs.subclassesOf(IpcCommand.class)) {
+            renderer.value(command, COMMAND_RENDERER);
         }
+        renderer.endList();
 
-        result.put("commands", commands);
+        result.put("commands", renderer.build());
     }
 }
