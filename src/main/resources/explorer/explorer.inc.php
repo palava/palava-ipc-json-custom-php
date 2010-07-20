@@ -1,33 +1,33 @@
 <?php
 /**
  *
- * 1. requires the following variables to be set
- *
- *  $config['host'] = 'localhost'
- *  $config['post'] = 2001
- *  $config['packages'] = array('de.cosmocode', '...')
- *
- *
- * 2. requires Palava.php to be loaded
+ * 1. requires Palava.php to be loaded
  *
  */
 
-// the commands command to get all available commands
-define('COMMANDS', 'de.cosmocode.palava.ipc.json.custom.php.explorer');
+// application-infos
+define('EXPLORER_NAME', 'Command EXplorer');
+define('EXPLORER_VERSION', '0.0.1');
 
-// connect to palava
-$palava = new Palava($config['host'], $config['port']);
+// more constants
+define('VIEW', (empty($_GET['cmd']) ? 'welcome' : 'command') . '.php');
+define('COMMAND', (empty($_GET['cmd']) ? null : $_GET['cmd']));
 
-// get a list of all commands
-$result = $palava->call(COMMANDS, array('packages' => $config['packages']));
-$commands = $result['commands'];
+define('COMMAND_DEPRECATED', 'java.lang.Deprecated');
+define('COMMAND_SINGLETON', 'com.google.inject.Singleton');
 
+define('DEBUG', 1);
 
-// TODO implement the logic
-print_r($commands);
+if (DEBUG == 0) {
+    error_reporting(0);
+} else {
+    error_reporting(E_ALL);
+}
 
+require 'libraries/Explorer.php';
 
-// at the end, disconnect
-$palava->disconnect();
-die();
+$Explorer = new Explorer($config);
+
+require 'view/index.php';
+ 
 ?>

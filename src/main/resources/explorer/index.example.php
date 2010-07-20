@@ -4,11 +4,9 @@
 
 require('../palava/Palava.php');
 
-$config = array(
-    'host' => 'localhost',
-    'port' => 2001,
-    'packages' => array('de.cosmocode', 'se.turistcentersyd')
-);
+$config['host'] = 'localhost';
+$config['port'] = 2001;
+$config['packages'] = array('de.cosmocode');
 
 require('explorer.inc.php');
 
