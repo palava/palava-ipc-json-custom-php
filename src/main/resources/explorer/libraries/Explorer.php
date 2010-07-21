@@ -24,6 +24,9 @@ class Explorer {
             )
         );
 
+        // sort the classes
+        uasort($result['commands'], array('Explorer', 'compareCommands'));
+
         // parse the data
         foreach ($result['commands'] as $data) {
             Package::parseCommand($data);
@@ -31,6 +34,10 @@ class Explorer {
 
         // to have a nicer tree, summarize packages with just one sub package
         Package::summarizePackages();
+    }
+
+    private static function compareCommands($c1, $c2) {
+        return strcmp($c1['class'], $c2['class']);
     }
     
     public function __destruct() {
