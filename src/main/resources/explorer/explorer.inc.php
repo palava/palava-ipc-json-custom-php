@@ -24,6 +24,8 @@ if (DEBUG == 0) {
 }
 
 require 'libraries/Explorer.php';
+require 'libraries/IpcCommand.php';
+require 'libraries/Package.php';
 
 $Explorer = new Explorer($config);
 

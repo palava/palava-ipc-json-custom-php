@@ -7,11 +7,27 @@
 </head>
 <body>
   <div id="ex__left">
-   <ul>
-     <?php foreach ($Explorer->getCommands() as $command):?>
-       <li><?php echo $command['class'] ?></li>
-     <?php endforeach; ?>
-   </ul>
+
+      <?php
+          // helper method to recursiv generate the html
+          function generateUl($list) {
+              echo '<ul>';
+              foreach ($list as $li) {
+                  if ($li instanceof Package) {
+                      echo '<li>'.$li->getName().'</li>';
+                      generateUl($li->getPackages());
+                      generateUl($li->getCommands());
+                  } else {
+                      echo '<li><a href="#'.$li->getFullName().'">'.$li->getName().'</a></li>';
+                  }
+              }
+              echo '</ul>';
+          }
+
+          // now generate everything 
+          generateUl(Package::getRoots());
+        ?>
+
   </div>
   <div id="ex__content">
     <?php require VIEW;?>
