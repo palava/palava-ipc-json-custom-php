@@ -1,0 +1,13 @@
+
+#ex__left ul {
+	display: none;
+	list-style-type: none;
+}
+
+#ex__left ul span {
+	font-weight: bold;
+}
+
+#ex__left .level_0 {
+	display: block;
+}
