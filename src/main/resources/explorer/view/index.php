@@ -8,7 +8,9 @@
   <script src="js/script.js" type="text/javascript"></script>
 </head>
 <body>
-  <div id="ex__left">
+  <div id="ex_wrapper" class="clearfix">
+    <div id="ex__left">
+      <h2>Commands</h2>
       <?php
           // helper method to recursiv generate the html
           function generateUl($list, $level) {
@@ -31,9 +33,10 @@
           // now generate everything 
           generateUl(Package::getRoots(), 0);
         ?>
-  </div>
-  <div id="ex__content">
-    <?php require ROOT . 'view' . DS . VIEW;?>
+    </div>
+    <div id="ex__content">
+      <?php require ROOT . 'view' . DS . VIEW;?>
+    </div>
   </div>
 </body>
 </html>

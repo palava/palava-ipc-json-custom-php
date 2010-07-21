@@ -1,13 +1,138 @@
+/* Reset Styles
+   Author: Florian Purchess
+   ----------------------------------------------------*/
+
+
+/* =RESET
+   ----------------------------------------------------*/
+
+html { font-size: 62.5%; } /* 1em = 10px when font-size standard is 16px */
+   
+body {
+    line-height: 1;
+    font-family: Verdana,Arial,serif;
+    font-size: 1em;
+}
+ 
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+}
+
+a img {border: 0;}
+
+:focus {outline: 0;}
+
+ol, ul {list-style-type: none;}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {content: "";}
+blockquote, q {quotes: "" "";}
+
+address {font-style: normal;}
+
+
+/* =LAYOUT
+   ----------------------------------------------------*/
+
+html,
+body {
+	height: 100%;
+}
+
+#ex_wrapper {
+	font-size: 1.2em;
+	height: 100%;
+}
+
+#ex__left {
+	background-color: #eee;
+	border-right: 3px double #ccc;
+	float: left;
+	height: 100%;
+	padding: 20px;
+	width: 280px;
+}
+
+#ex__content {
+	margin-left: 340px;
+	padding: 20px;
+}
+	
+
+/* =LEFT
+   ----------------------------------------------------*/
+
+#ex__left h2 {
+	line-height: 1.5em;
+	margin: 0 0 10px;
+}
 
 #ex__left ul {
 	display: none;
 	list-style-type: none;
+	margin: 0 0 5px 15px;
 }
 
 #ex__left ul span {
+	cursor: pointer; 
+	font-size: 1.2em;
 	font-weight: bold;
+	line-height: 1.5em;
 }
 
 #ex__left .level_0 {
 	display: block;
+	margin: 0 0 5px;
+}
+
+#ex__left ul li a {
+	font-size: 1.2em;
+    line-height: 1.5em;
+}
+    
+
+/* =CONTENT
+   ----------------------------------------------------*/
+
+#ex__content h1 {
+    margin: 0 0 10px;
+}
+
+
+/* =GENERAL
+   ----------------------------------------------------*/
+   
+.clearfix:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+}
+
+.clearfix {
+    display: inline-block;
+}
+
+html[xmlns] .clearfix {
+    display: block;
+}
+
+* html .clearfix {
+    height: 1%;
 }
