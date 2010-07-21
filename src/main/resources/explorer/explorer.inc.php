@@ -7,7 +7,6 @@
 
 // application-infos
 define('EXPLORER_NAME', 'Command EXplorer');
-define('EXPLORER_VERSION', '0.0.1');
 
 // more constants
 define('VIEW', (empty($_GET['cmd']) ? 'welcome' : 'command') . '.php');
