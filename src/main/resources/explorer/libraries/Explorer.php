@@ -1,26 +1,26 @@
 <?php if (!defined("EXPLORER_NAME")) die("Must be run within the Command-Explorer."); 
 
 class Explorer {
-    private $config = array(
+    private static $config = array(
         'host' => 'localhost',
         'port' => 2001,
         'packages' => array('de.cosmocode')
     );
     
-    private $palava = null;
+    private static $palava = null;
     
-    public function __construct($config = array()) {
-        $this->config = array_merge($this->config, $config);
+    public static function init($config = array()) {
+        self::$config = array_merge(self::$config, $config);
 
         // connect to the backend
-        $this->palava = new Palava($this->config['host'], $this->config['port']);
-        $this->palava->connect();
+        self::$palava = new Palava(self::$config['host'], self::$config['port']);
+        self::$palava->connect();
     
         // get a list of all commands
-        $result = $this->palava->call(
+        $result = self::$palava->call(
             'de.cosmocode.palava.ipc.json.custom.php.explorer.Commands',
             array(
-                'packages' => $this->config['packages']
+                'packages' => self::$config['packages']
             )
         );
 
@@ -40,7 +40,7 @@ class Explorer {
         return strcmp($c1['class'], $c2['class']);
     }
     
-    public function __destruct() {
-        $this->palava->disconnect();
+    public static function disconnect() {
+        self::$palava->disconnect();
     }
 }

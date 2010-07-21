@@ -33,8 +33,10 @@ require ROOT . 'libraries' . DS . 'objs' . DS . 'Params.php';
 require ROOT . 'libraries' . DS . 'objs' . DS . 'Returns.php';
 require ROOT . 'libraries' . DS . 'objs' . DS . 'Throws.php';
 
-$Explorer = new Explorer($config);
+Explorer::init($config);
 
 require ROOT . 'view' . DS . 'index.php';
  
+Explorer::disconnect();
+
 ?>

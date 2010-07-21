@@ -53,9 +53,10 @@ body {
 	height: 100%;
 }
 
-#ex_wrapper {
+#ex__wrapper {
 	font-size: 1.2em;
 	height: 100%;
+	overflow: hidden;
 }
 
 #ex__left {
@@ -64,25 +65,33 @@ body {
 	float: left;
 	height: 100%;
 	padding: 20px;
-	width: 280px;
+	position: relative;
+	width: 340px;
 }
 
 #ex__content {
 	margin-left: 340px;
-	padding: 20px;
+	height: 100%;
+	padding: 20px 20px 20px 50px;
+	position: relative;
 }
 	
 
 /* =LEFT
    ----------------------------------------------------*/
 
+#ex__left .toggle {
+	position: absolute;
+	right: 10px;
+	top: 5px;
+}
+
 #ex__left h2 {
 	line-height: 1.5em;
-	margin: 0 0 10px;
+	margin: 0 0 15px;
 }
 
 #ex__left ul {
-	display: none;
 	list-style-type: none;
 	margin: 0 0 5px 15px;
 }
@@ -109,7 +118,112 @@ body {
    ----------------------------------------------------*/
 
 #ex__content h1 {
-    margin: 0 0 10px;
+    margin: 0 0 27px;
+}
+
+#ex__content h2 {
+	margin: 5px 0 15px;
+}
+
+#ex__content h3 {
+	font-size: 1.3em;
+    margin: 20px 0 10px;
+}
+
+#ex__content p.description {
+	font-size: 1.2em;
+	margin: 20px 0 30px;
+}
+
+#ex__content ul {
+    font-size: 1.2em;
+    line-height: 1.5em;
+}
+
+#ex__content ul li {
+	margin: 0 0 10px 15px;
+}
+
+#ex__content ul li span.description {
+	font-size: 0.9em;
+}
+
+
+/* =SANDBOX
+   ----------------------------------------------------*/
+
+.sandbox_spacer {
+	background: blue;
+	display: none;
+}
+
+#ex__sandbox {
+	background: #ddd;
+	bottom: 0;
+	position: absolute;
+	height: 35px;
+	left: 0;
+	overflow: hidden;
+	width: 100%;
+}
+
+#ex__sandbox.expanded {
+	height: 75%;
+}
+
+#ex__sandbox h2 {
+	cursor: pointer;
+	text-align: center;
+	margin: 0 0 20px;
+	padding: 10px 15px;
+}
+
+#ex__sandbox .wrap {
+	padding: 0 20px 10px 50px;
+	height: 100%;
+}
+
+#ex__sandbox form {
+	height: 100%;
+}
+
+
+#ex__sandbox form .submit {
+	background: #fff;
+	border: 1px solid;
+	cursor: pointer;
+	display: none;
+	padding: 3px 5px;
+	position: absolute;
+	right: 15px;
+	top: 6px;
+}
+
+#ex__sandbox.expanded form .submit {
+	display: block;
+}
+
+#ex__sandbox label {
+	display: block;
+	font-size: 1.1em;
+	margin: 0 0 5px;
+}
+
+#ex__sandbox textarea {
+	height: 75%;
+	width: 100%;
+}
+
+#ex__sandbox .parameters {
+    float: left;
+    height: 100%;
+    width: 48%;
+}
+
+#ex__sandbox .returns {
+    float: right;
+    height: 100%;
+    width: 48%;
 }
 
 
