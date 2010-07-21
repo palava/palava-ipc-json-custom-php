@@ -33,6 +33,7 @@ import de.cosmocode.rendering.Renderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Modifier;
 import java.util.Map;
 
 /**
@@ -68,6 +69,11 @@ public final class Commands implements IpcCommand {
 
         renderer.list();
         for (Class<? extends IpcCommand> command: pkgs.subclassesOf(IpcCommand.class)) {
+            if (command.isInterface() || Modifier.isAbstract(command.getModifiers())) {
+                // not executable
+                continue;
+            }
+
             renderer.value(command, COMMAND_RENDERER);
         }
         renderer.endList();
