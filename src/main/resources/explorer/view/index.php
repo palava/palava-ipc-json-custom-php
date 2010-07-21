@@ -7,18 +7,20 @@
 </head>
 <body>
   <div id="ex__left">
-
       <?php
           // helper method to recursiv generate the html
           function generateUl($list) {
+              if (empty($list)) return;
+              
               echo '<ul>';
               foreach ($list as $li) {
                   if ($li instanceof Package) {
-                      echo '<li>'.$li->getName().'</li>';
+                      echo '<li><span>'.$li->getName().'</span>';
                       generateUl($li->getPackages());
                       generateUl($li->getCommands());
+                      echo '</li>';
                   } else {
-                      echo '<li><a href="#'.$li->getFullName().'">'.$li->getName().'</a></li>';
+                      echo '<li><a href="?cmd='.$li->getFullName().'">'.$li->getName().'</a></li>';
                   }
               }
               echo '</ul>';
@@ -27,7 +29,6 @@
           // now generate everything 
           generateUl(Package::getRoots());
         ?>
-
   </div>
   <div id="ex__content">
     <?php require VIEW;?>

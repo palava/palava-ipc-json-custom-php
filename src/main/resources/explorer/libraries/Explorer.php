@@ -1,4 +1,4 @@
-<?php 
+<?php if (!defined("EXPLORER_NAME")) die("Must be run within the Command-Explorer."); 
 
 class Explorer {
     private $config = array(
