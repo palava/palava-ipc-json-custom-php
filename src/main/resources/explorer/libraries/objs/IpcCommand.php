@@ -60,7 +60,31 @@ class IpcCommand {
         $parts = explode('.', $data['class']);
         $this->name = $parts[count($parts) - 1];
 
-        // TODO parse data and fill in private variables
+        if (isset($data['description'])) {
+            $this->description = $data['description'];
+        } else {
+            $this->description = null;
+        }
+
+        $this->params = array();
+        foreach ($data['params'] as $param) {
+            $this->params[] = new Params($param);
+        }
+
+        $this->returns = array();
+        foreach ($data['returns'] as $returns) {
+            $this->returns[] = new Returns($returns);
+        }
+
+        $this->throws = array();
+        foreach ($data['throws'] as $throws) {
+            $this->throws[] = new Throws($throws);
+        }
+
+        $this->annotations = array();
+        foreach ($data['annotations'] as $annotations) {
+            $this->annotations[] = new Annotations($annotations);
+        }
     }
 
     /**

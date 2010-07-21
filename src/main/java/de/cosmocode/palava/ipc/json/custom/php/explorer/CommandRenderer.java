@@ -120,7 +120,7 @@ final class CommandRenderer implements ValueRenderer<Class<? extends IpcCommand>
         r.key("throws").list();
         for (IpcCommand.Throw thro: throwsList) {
             r.map();
-            r.key("name").value(thro.name());
+            r.key("name").value(thro.name().getName());
             r.key("description").value(thro.description());
             r.endMap();
         }
