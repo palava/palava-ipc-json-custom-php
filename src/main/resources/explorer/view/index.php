@@ -9,15 +9,15 @@
   <div id="ex__left">
       <?php
           // helper method to recursiv generate the html
-          function generateUl($list) {
+          function generateUl($list, $level) {
               if (empty($list)) return;
               
-              echo '<ul>';
+              echo '<ul class="level_' . $level++ . '">';
               foreach ($list as $li) {
                   if ($li instanceof Package) {
                       echo '<li><span>'.$li->getName().'</span>';
-                      generateUl($li->getPackages());
-                      generateUl($li->getCommands());
+                      generateUl($li->getPackages(), $level);
+                      generateUl($li->getCommands(), $level);
                       echo '</li>';
                   } else {
                       echo '<li><a href="?cmd='.$li->getFullName().'">'.$li->getName().'</a></li>';
@@ -27,11 +27,11 @@
           }
 
           // now generate everything 
-          generateUl(Package::getRoots());
+          generateUl(Package::getRoots(), 0);
         ?>
   </div>
   <div id="ex__content">
-    <?php require VIEW;?>
+    <?php require ROOT . 'view' . DS . VIEW;?>
   </div>
 </body>
 </html>

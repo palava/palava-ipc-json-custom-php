@@ -8,9 +8,11 @@
 // application-infos
 define('EXPLORER_NAME', 'Command EXplorer');
 
-// more constants
+define('DS', DIRECTORY_SEPARATOR);
+define('ROOT', dirname(__FILE__) . DS);
+
 define('VIEW', (empty($_GET['cmd']) ? 'welcome' : 'command') . '.php');
-define('COMMAND', (empty($_GET['cmd']) ? null : $_GET['cmd']));
+define('COMMAND', (empty($_GET['cmd']) ? null : $_GET['cmd'])); 
 
 define('COMMAND_DEPRECATED', 'java.lang.Deprecated');
 define('COMMAND_SINGLETON', 'com.google.inject.Singleton');
@@ -23,12 +25,12 @@ if (DEBUG == 0) {
     error_reporting(E_ALL);
 }
 
-require 'libraries/Explorer.php';
-require 'libraries/IpcCommand.php';
-require 'libraries/Package.php';
+require ROOT . 'libraries' . DS . 'Explorer.php';
+require ROOT . 'libraries' . DS . 'IpcCommand.php';
+require ROOT . 'libraries' . DS . 'Package.php';
 
 $Explorer = new Explorer($config);
 
-require 'view/index.php';
+require ROOT . 'view' . DS . 'index.php';
  
 ?>
