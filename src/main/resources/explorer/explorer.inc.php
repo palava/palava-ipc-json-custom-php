@@ -12,7 +12,7 @@ define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', dirname(__FILE__) . DS);
 
 define('VIEW', (empty($_GET['cmd']) ? 'welcome' : 'command') . '.php');
-define('COMMAND', (empty($_GET['cmd']) ? null : $_GET['cmd'])); 
+define('COMMAND', (empty($_GET['cmd']) ? null : $_GET['cmd']));
 
 define('COMMAND_DEPRECATED', 'java.lang.Deprecated');
 define('COMMAND_SINGLETON', 'com.google.inject.Singleton');
@@ -26,8 +26,12 @@ if (DEBUG == 0) {
 }
 
 require ROOT . 'libraries' . DS . 'Explorer.php';
-require ROOT . 'libraries' . DS . 'IpcCommand.php';
-require ROOT . 'libraries' . DS . 'Package.php';
+require ROOT . 'libraries' . DS . 'objs' . DS . 'Annotations.php';
+require ROOT . 'libraries' . DS . 'objs' . DS . 'IpcCommand.php';
+require ROOT . 'libraries' . DS . 'objs' . DS . 'Package.php';
+require ROOT . 'libraries' . DS . 'objs' . DS . 'Params.php';
+require ROOT . 'libraries' . DS . 'objs' . DS . 'Returns.php';
+require ROOT . 'libraries' . DS . 'objs' . DS . 'Throws.php';
 
 $Explorer = new Explorer($config);
 

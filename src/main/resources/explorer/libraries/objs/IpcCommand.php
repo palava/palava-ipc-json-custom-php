@@ -19,6 +19,36 @@ class IpcCommand {
      */
     private $package;
 
+    /**
+     * the command's description
+     * @var string
+     */
+    private $description;
+
+    /**
+     * list of parameters
+     * @var array
+     */
+    private $params;
+
+    /**
+     * list of results
+     * @var array
+     */
+    private $returns;
+
+    /**
+     * list of exceptions
+     * @var array
+     */
+    private $throws;
+
+    /**
+     * list of additional annotations
+     * @var array
+     */
+    private $annotations;
+
 
     /**
      * @param  $data array the unparsed data from Commands
@@ -58,5 +88,39 @@ class IpcCommand {
         return $this->package;
     }
 
+    /**
+     * @return string
+     */
+    public function getDescription() {
+        return $this->description;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams() {
+        return $this->params;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReturns() {
+        return $this->returns;
+    }
+
+    /**
+     * @return array
+     */
+    public function getThrows() {
+        return $this->throws;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAnnotations() {
+        return $this->annotations;
+    }
 
 }

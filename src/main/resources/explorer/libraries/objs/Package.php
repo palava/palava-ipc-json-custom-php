@@ -198,4 +198,43 @@ class Package {
         }
         return $package;
     }
+
+    /**
+     * @static
+     * @throws Exception if no command was found with this name
+     * @param  $commandName the commands full name
+     * @return IpcCommand the found command
+     */
+    public static function getCommand($commandName) {
+        foreach (Package::getRoots() as $root) {
+            if ($root instanceof Package) {
+                $command = self::_getCommand($root, $commandName);
+                if (!is_null($command)) {
+                    return $command;
+                }
+            } else {
+                if ($root->getFullName() == $commandName) {
+                    return $root;
+                }
+            }
+        }
+        throw new Exception("Command $commandName not found");
+    }
+
+    private static function _getCommand($package, $commandName) {
+        foreach ($package->getCommands() as $command) {
+            if ($command->getFullName() == $commandName) {
+                return $command;
+            }
+        }
+
+        foreach ($package->getPackages() as $pkg) {
+            $command = self::_getCommand($pkg, $commandName);
+            if (!is_null($command)) {
+                return $command;
+            }
+        }
+
+        return null;
+    }
 }
