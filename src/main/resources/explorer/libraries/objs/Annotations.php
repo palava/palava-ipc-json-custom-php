@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @author Tobias Sarnowski
+ */
 class Annotations {
 
     /**
@@ -13,9 +16,9 @@ class Annotations {
     }
 
     /**
-     * @return ?#M#CAnnotations.name
+     * @return string
      */
     public function getName() {
-        return $this->name();
+        return $this->name;
     }
 }
