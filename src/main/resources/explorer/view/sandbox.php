@@ -1,6 +1,20 @@
 <?php if (!defined("EXPLORER_NAME")) die("Must be run within the Command-Explorer."); ?>
 
-<?php if (!$cmd) $cmd = Package::getCommand(COMMAND); ?>
+<?php
+
+if (!$cmd) $cmd = Package::getCommand(COMMAND);
+
+if (empty($_POST['parameters'])) {
+    $box_params = '{' . NL;
+    foreach ($cmd->getParameters() as $param) {
+        $box_params = TAB . $param->getName() . ' : ,' . NL;
+    }
+    $box_params = rtrim($box_params, ',' . NL) . NL . '}';
+} else {
+    $box_params = $_POST['parameters'];
+}
+
+?>
 
 <div id="ex__sandbox" class="<? if (!empty($_COOKIE['sandbox_expanded'])) echo 'expanded'; ?>">
   <div class="wrap">

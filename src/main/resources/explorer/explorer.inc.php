@@ -11,6 +11,9 @@ define('EXPLORER_NAME', 'Command EXplorer');
 define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', dirname(__FILE__) . DS);
 
+define('NL', '\n');
+define('TAB', '\t');
+
 define('VIEW', (empty($_GET['cmd']) ? 'welcome' : 'command') . '.php');
 define('COMMAND', (empty($_GET['cmd']) ? null : $_GET['cmd']));
 
