@@ -64,4 +64,4 @@
   <p class="none"><i>no annotations</i></p>
 <?php endif; ?>
 
-<?php require ROOT . 'view' . DS . 'sandbox.php'; ?>
+<?php //require ROOT . 'view' . DS . 'sandbox.php'; ?>
