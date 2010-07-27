@@ -16,60 +16,84 @@
 
 package de.cosmocode.palava.ipc.json.custom.php.explorer;
 
-import de.cosmocode.palava.ipc.IpcCommand;
-import de.cosmocode.rendering.Renderer;
-import de.cosmocode.rendering.RenderingException;
-import de.cosmocode.rendering.ValueRenderer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.annotation.Annotation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import de.cosmocode.palava.ipc.IpcCommand;
+import de.cosmocode.palava.ipc.IpcCommand.Description;
+import de.cosmocode.palava.ipc.IpcCommand.Meta;
+import de.cosmocode.palava.ipc.IpcCommand.Param;
+import de.cosmocode.palava.ipc.IpcCommand.Params;
+import de.cosmocode.palava.ipc.IpcCommand.Return;
+import de.cosmocode.palava.ipc.IpcCommand.Returns;
+import de.cosmocode.palava.ipc.IpcCommand.Throw;
+import de.cosmocode.palava.ipc.IpcCommand.Throws;
+import de.cosmocode.rendering.Renderer;
+import de.cosmocode.rendering.RenderingException;
+import de.cosmocode.rendering.ValueRenderer;
 
 /**
+ * {@link ValueRenderer} for {@link IpcCommand} classes.
+ * 
  * @author Tobias Sarnowski
  */
-final class CommandRenderer implements ValueRenderer<Class<? extends IpcCommand>> {
+enum CommandRenderer implements ValueRenderer<Class<? extends IpcCommand>> {
+    
+    INSTANCE;
+    
     private static final Logger LOG = LoggerFactory.getLogger(CommandRenderer.class);
-
-
+    
     @Override
     public void render(@Nullable Class<? extends IpcCommand> c, @Nonnull Renderer r) throws RenderingException {
         if (c == null) {
-            LOG.debug("Skipping rendering; command is null");
-            return;
+            LOG.debug("Command is null");
+            r.nullValue();
+        } else {
+            r.map();
+            
+            basics(c, r);
+            params(c, r);
+            returns(c, r);
+            throwss(c, r);
+            annotations(c, r);
+            
+            r.endMap();
         }
-        
-        // the class informations
-        r.map();
-
+    }
+    
+    private void basics(Class<? extends IpcCommand> c, Renderer r) {
         // class
         r.key("class").value(c.getName());
 
-
         // description
-        IpcCommand.Description description = c.getAnnotation(IpcCommand.Description.class);
+        final Description description = c.getAnnotation(Description.class);
         if (description != null) {
             r.key("description").value(description.value());
         }
+    }
 
+    private void params(Class<? extends IpcCommand> c, Renderer r) {
+        final Param[] paramList;
 
-        // params
-        IpcCommand.Param[] paramList = new IpcCommand.Param[0];
-
-        IpcCommand.Params params = c.getAnnotation(IpcCommand.Params.class);
-        if (params != null) {
-            paramList = params.value();
-        } else {
-            IpcCommand.Param param = c.getAnnotation(IpcCommand.Param.class);
-            if (param != null) {
-                paramList = new IpcCommand.Param[]{param};
+        final Params params = c.getAnnotation(Params.class);
+        if (params == null) {
+            final Param param = c.getAnnotation(Param.class);
+            if (param == null) {
+                paramList = new Param[0];
+            } else {
+                paramList = new Param[]{param};
             }
+        } else {
+            paramList = params.value();
         }
 
         r.key("params").list();
-        for (IpcCommand.Param param: paramList) {
+        for (Param param : paramList) {
             r.map();
             r.key("name").value(param.name());
             r.key("description").value(param.description());
@@ -79,70 +103,70 @@ final class CommandRenderer implements ValueRenderer<Class<? extends IpcCommand>
             r.endMap();
         }
         r.endList();
+    }
+    
+    private void returns(Class<? extends IpcCommand> c, Renderer r) {
+        final Return[] returnList;
 
-
-        // returns
-        IpcCommand.Return[] returnList = new IpcCommand.Return[0];
-
-        IpcCommand.Returns returns = c.getAnnotation(IpcCommand.Returns.class);
-        if (returns != null) {
-            returnList = returns.value();
-        } else {
-            IpcCommand.Return ret = c.getAnnotation(IpcCommand.Return.class);
-            if (ret != null) {
-                returnList = new IpcCommand.Return[]{ret};
+        final Returns returns = c.getAnnotation(Returns.class);
+        if (returns == null) {
+            final Return ret = c.getAnnotation(Return.class);
+            if (ret == null) {
+                returnList = new Return[0];
+            } else {
+                returnList = new Return[]{ret};
             }
+        } else {
+            returnList = returns.value();
         }
 
         r.key("returns").list();
-        for (IpcCommand.Return ret: returnList) {
+        for (Return ret : returnList) {
             r.map();
             r.key("name").value(ret.name());
             r.key("description").value(ret.description());
             r.endMap();
         }
         r.endList();
+    }
+    
+    private void throwss(Class<? extends IpcCommand> c, Renderer r) {
+        final Throw[] throwsList;
 
-
-        // throws
-        IpcCommand.Throw[] throwsList = new IpcCommand.Throw[0];
-
-        IpcCommand.Throws throwss = c.getAnnotation(IpcCommand.Throws.class);
-        if (throwss != null) {
-            throwsList = throwss.value();
-        } else {
-            IpcCommand.Throw thro = c.getAnnotation(IpcCommand.Throw.class);
-            if (thro != null) {
-                throwsList = new IpcCommand.Throw[]{thro};
+        final Throws throwss = c.getAnnotation(Throws.class);
+        if (throwss == null) {
+            final Throw thro = c.getAnnotation(Throw.class);
+            if (thro == null) {
+                throwsList = new Throw[0];
+            } else {
+                throwsList = new Throw[]{thro};
             }
+        } else {
+            throwsList = throwss.value();
         }
 
         r.key("throws").list();
-        for (IpcCommand.Throw thro: throwsList) {
+        for (Throw thro : throwsList) {
             r.map();
             r.key("name").value(thro.name().getName());
             r.key("description").value(thro.description());
             r.endMap();
         }
         r.endList();
-
-
-        // every other annotation on the class
+    }
+    
+    private void annotations(Class<? extends IpcCommand> c, Renderer r) {
         r.key("annotations").list();
-        for (Annotation a: c.getAnnotations()) {
-            if (a.annotationType().getAnnotation(IpcCommand.Meta.class) != null) {
+        for (Annotation a : c.getAnnotations()) {
+            if (a.annotationType().isAnnotationPresent(Meta.class)) {
                 // ipc command meta informations are already parsed
                 continue;
             }
-
             r.map();
             r.key("name").value(a.annotationType().getName());
             r.endMap();
         }
         r.endList();
-
-
-        // the class informations
-        r.endMap();
     }
+    
 }
