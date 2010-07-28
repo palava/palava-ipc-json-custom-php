@@ -216,11 +216,15 @@ class Palava {
 
 		// send it
 		$json = json_encode($request);
+        $size_sent = strlen($json);
+        $packets_sent = 0;
 
         $call_start = microtime(true);
+        // TODO send until everything is done even if it requires multiple packets?
 		if (!@fwrite($this->socket, $json)) {
 			throw new PalavaConnectionException("cannot send request");
 		}
+        $packets_sent++;
 		if (!@fflush($this->socket)) {
 			throw new PalavaConnectionException("cannot flush request");
 		}
@@ -232,8 +236,10 @@ class Palava {
 		$json_in_string = false;
 		$json_is_escaped = false;
 		$json_completed = false;
+        $packets_gotten = 0;
 		while (!feof($this->socket)) {
             $buffer .= @fread($this->socket, self::$BUFFER_CHUNK_SIZE);
+            $packets_gotten++;
 			while ($json_pointer < strlen($buffer)) {
 				$current = substr($buffer, $json_pointer, 1);
 				if (!$json_in_string) {
@@ -263,7 +269,8 @@ class Palava {
 				break;
 			}
 		}
-        PalavaStatistics::logCall($command, microtime(true) - $call_start);
+        $size_gotten = strlen($buffer);
+        PalavaStatistics::logCall($command, microtime(true) - $call_start, $size_sent, $packets_sent, $size_gotten, $packets_gotten);
 		if (!$json_completed) {
 			throw new PalavaConnectionException("cannot read response: ".$buffer);
 		}

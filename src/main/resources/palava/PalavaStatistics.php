@@ -12,8 +12,15 @@ class PalavaStatistics {
     }
 
 
-    public static function logCall($command, $microtime) {
-        self::$logs[] = array('command' => $command, 'microtime' => $microtime);
+    public static function logCall($command, $microtime, $bytesSent, $packetsSent, $bytesGotten, $packetsGotten) {
+        self::$logs[] = array(
+            'command' => $command,
+            'microtime' => $microtime,
+            'bytesSent' => $bytesSent,
+            'packetsSent' => $packetsSent,
+            'bytesGotten' => $bytesGotten,
+            'packetsGotten' => $packetsGotten
+        );
     }
 
 
@@ -25,9 +32,17 @@ class PalavaStatistics {
         $stats = self::get();
 
         $javaTime = 0;
+        $bytesSent = 0;
+        $packetsSent = 0;
+        $bytesGotten = 0;
+        $packetsGotten = 0;
 
         foreach ($stats['logs'] as $log) {
             $javaTime += $log['microtime'];
+            $bytesSent += $log['bytesSent'];
+            $packetsSent += $log['packetsSent'];
+            $bytesGotten += $log['bytesGotten'];
+            $packetsGotten += $log['packetsGotten'];
         }
 
         $allTime = microtime(true) - $stats['startTime'];
@@ -40,6 +55,11 @@ class PalavaStatistics {
 
         $stats['java_percent'] = (int)($javaTime * 100 / $allTime);
         $stats['php_percent'] = (int)($phpTime * 100 / $allTime);
+
+        $stats['bytes_sent'] = $bytesSent;
+        $stats['bytes_gotten'] = $bytesGotten;
+        $stats['packets_sent'] = $packetsSent;
+        $stats['packets_gotten'] = $packetsGotten;
 
         return $stats;
     }
