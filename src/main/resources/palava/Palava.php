@@ -237,11 +237,13 @@ class Palava {
 		$json_is_escaped = false;
 		$json_completed = false;
         $packets_gotten = 0;
+        $buffer_size = 0;
 		while (!feof($this->socket)) {
             $buffer .= @fread($this->socket, self::$BUFFER_CHUNK_SIZE);
             $packets_gotten++;
-			while ($json_pointer < strlen($buffer)) {
-				$current = substr($buffer, $json_pointer, 1);
+            $buffer_size = strlen($buffer);
+			while ($json_pointer < $buffer_size) {
+                $current = $buffer[$json_pointer];
 				if (!$json_in_string) {
 					if ($current == '"') {
 						$json_in_string = true;
@@ -269,8 +271,7 @@ class Palava {
 				break;
 			}
 		}
-        $size_gotten = strlen($buffer);
-        PalavaStatistics::logCall($command, microtime(true) - $call_start, $size_sent, $packets_sent, $size_gotten, $packets_gotten);
+        PalavaStatistics::logCall($command, microtime(true) - $call_start, $size_sent, $packets_sent, $buffer_size, $packets_gotten);
 		if (!$json_completed) {
 			throw new PalavaConnectionException("cannot read response: ".$buffer);
 		}
