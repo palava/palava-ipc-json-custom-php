@@ -202,7 +202,7 @@ body {
 }
 
 #ex__sandbox.expanded form .submit {
-	display: block;
+	display: none;
 }
 
 #ex__sandbox label {

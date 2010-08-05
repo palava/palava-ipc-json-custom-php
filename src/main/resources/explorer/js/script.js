@@ -78,8 +78,14 @@ $(document).ready(function(){
         $(this).animate({width: '75%'}).parent().find('.parameters').animate({width: '20%'});
     });
 
-    $('#ex__sandbox .parameters, #ex__sandbox .returns').live('blur', function() {
-        
+    $('#ex__sandbox .parameters textarea').live('keyup', function() {
+        try {
+            eval('var json = ' + $(this).removeClass('error').val() + ';');
+            $('#ex__sandbox .submit').show();
+        } catch(e) {
+            $('#ex__sandbox .submit').hide();
+            $(this).addClass('error');
+        }
     });
 
     $('#ex__sandbox form').live('submit', function(){
