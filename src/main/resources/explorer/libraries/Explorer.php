@@ -36,6 +36,10 @@ class Explorer {
         Package::summarizePackages();
     }
 
+    public static function runCommand($command, $params = array()) {
+        return self::$palava->call($command, $params);
+    }
+
     private static function compareCommands($c1, $c2) {
         return strcmp($c1['class'], $c2['class']);
     }

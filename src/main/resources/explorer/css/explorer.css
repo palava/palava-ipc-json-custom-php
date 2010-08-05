@@ -81,9 +81,11 @@ body {
    ----------------------------------------------------*/
 
 #ex__left .toggle {
-	position: absolute;
-	right: 10px;
-	top: 5px;
+	position: fixed;
+	left: 290px;
+    text-align: right;
+    top: 10px;
+    width: 55px;
 }
 
 #ex__left h2 {

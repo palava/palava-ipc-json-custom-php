@@ -6,13 +6,24 @@ if (!$cmd) $cmd = Package::getCommand(COMMAND);
 
 if (empty($_POST['parameters'])) {
     $box_params = '{' . NL;
-    foreach ($cmd->getParameters() as $param) {
-        $box_params = TAB . $param->getName() . ' : ,' . NL;
+    foreach ($cmd->getParams() as $param) {
+        $box_params .= TAB . '"' . $param->getName() . '" : ,' . NL;
     }
     $box_params = rtrim($box_params, ',' . NL) . NL . '}';
+    
 } else {
     $box_params = $_POST['parameters'];
+
+    if (!empty($_POST['submit'])) {
+        $result = Ajax::runCommand(COMMAND, json_decode($_POST['parameters']));
+
+        if (is_array($result))
+            $box_returns = print_r($result, true);
+        else
+            $box_returns = $result;
+    }
 }
+
 
 ?>
 
@@ -28,7 +39,7 @@ if (empty($_POST['parameters'])) {
       </div>
       <div class="returns clearfix">
         <label>Returns:</label>
-        <textarea name="returns"><?php echo $box_returns; ?></textarea>
+        <textarea name="returns"><?php echo isset($box_returns) ? $box_returns : ''; ?></textarea>
       </div>
     </form>
   </div>

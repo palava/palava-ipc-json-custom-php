@@ -48,6 +48,10 @@ $(document).ready(function(){
 		$(this).toggleClass('show');
 		return false;
 	});
+
+    if ($('#ex__left ul ul:visible').length) {
+        $('#ex__left .toggle').text('hide all').toggleClass('show');
+    }
 	
 	// sandbox
 	$('#ex__sandbox h2').live('click', function() {
@@ -61,4 +65,12 @@ $(document).ready(function(){
 		$('#ex__sandbox').toggleClass('expanded');
 		set_cookie('sandbox_expanded', $('#ex__sandbox').attr('class'));
 	});
+
+    $('#ex__sandbox form').live('submit', function(){
+        var params = $('#ex__sandbox .parameters textarea').val();
+        $.post(window.location, {ajax: 'runCommand', parameters: params}, function(result){
+            $('#ex__sandbox .returns textarea').val(result);
+        });
+        return false;
+    });
 });
