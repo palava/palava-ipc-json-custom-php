@@ -213,7 +213,8 @@ body {
 
 #ex__sandbox textarea {
 	height: 75%;
-	width: 100%;
+    overflow: scroll;
+    width: 100%;
 }
 
 #ex__sandbox .parameters {

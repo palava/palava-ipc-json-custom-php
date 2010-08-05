@@ -34,8 +34,10 @@ $(document).ready(function(){
 			set_open();
 		});
 	});
-	
-	// toggle all
+
+    /**
+     * TOGGLE
+     */
 	$('#ex__left .toggle').live('click', function() {
 		if ($(this).hasClass('show')) {
 			$(this).text('show all');
@@ -52,8 +54,10 @@ $(document).ready(function(){
     if ($('#ex__left ul ul:visible').length) {
         $('#ex__left .toggle').text('hide all').toggleClass('show');
     }
-	
-	// sandbox
+
+    /**
+     * SANDBOX
+     */
 	$('#ex__sandbox h2').live('click', function() {
 		if ($('#ex__sandbox').hasClass('expanded')) {
 			$('#ex__sandbox').animate({height: '35px'});
@@ -66,6 +70,18 @@ $(document).ready(function(){
 		set_cookie('sandbox_expanded', $('#ex__sandbox').attr('class'));
 	});
 
+    $('#ex__sandbox .parameters').live('focus', function(){
+        $(this).animate({width: '75%'}).parent().find('.returns').animate({width: '20%'});
+    });
+    
+    $('#ex__sandbox .returns').live('focus', function(){
+        $(this).animate({width: '75%'}).parent().find('.parameters').animate({width: '20%'});
+    });
+
+    $('#ex__sandbox .parameters, #ex__sandbox .returns').live('blur', function() {
+        
+    });
+
     $('#ex__sandbox form').live('submit', function(){
         var params = $('#ex__sandbox .parameters textarea').val();
         $.post(window.location, {ajax: 'runCommand', parameters: params}, function(result){
@@ -73,4 +89,5 @@ $(document).ready(function(){
         });
         return false;
     });
+
 });
