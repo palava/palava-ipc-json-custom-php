@@ -6,7 +6,19 @@ function calc_height() {
 			$(e).css({overflowY: 'hidden', height: $('#ex__wrapper').height() - 40});
 		}
 	});
+
+    update_toggle();
 };
+
+function update_toggle() {
+    var toggle = $('#ex__left .toggle');
+    
+    if ($('#ex__left ul:visible li > ul:visible').length) {
+        toggle.text('hide all');
+    } else {
+        toggle.text('show all');
+    }
+}
 
 function set_cookie(name, value) {
 	document.cookie = name + '=' + value;
@@ -39,15 +51,13 @@ $(document).ready(function(){
      * TOGGLE
      */
 	$('#ex__left .toggle').live('click', function() {
-		if ($(this).hasClass('show')) {
-			$(this).text('show all');
-			$('#ex__left ul ul').hide();
-		} else {
-			$(this).text('hide all');
-			$('#ex__left ul ul').show();
-		}
+        if ($('#ex__left ul:visible li > ul:visible').length) {
+            $('#ex__left ul:visible li > ul').hide();
+        } else {
+            $('#ex__left ul:visible li > ul').show();
+        }
+		update_toggle();
 		set_open();
-		$(this).toggleClass('show');
 		return false;
 	});
 
