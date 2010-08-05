@@ -20,6 +20,18 @@ function update_toggle() {
     }
 }
 
+function toggle_sandbox() {
+    if ($('#ex__sandbox').hasClass('expanded')) {
+        $('#ex__sandbox').animate({height: '35px'});
+        $('#ex__sandbox form .submit').fadeOut();
+    } else {
+        $('#ex__sandbox').animate({height: '75%'});
+        $('#ex__sandbox form .submit').fadeIn();
+    }
+    $('#ex__sandbox').toggleClass('expanded');
+    set_cookie('sandbox_expanded', $('#ex__sandbox').attr('class'));
+}
+
 function set_cookie(name, value) {
 	document.cookie = name + '=' + value;
 	document.cookie = 'expires=' + (new Date()).getTime() + (60 * 60 * 24 * 3); // 3 Tage
@@ -68,17 +80,7 @@ $(document).ready(function(){
     /**
      * SANDBOX
      */
-	$('#ex__sandbox h2').live('click', function() {
-		if ($('#ex__sandbox').hasClass('expanded')) {
-			$('#ex__sandbox').animate({height: '35px'});
-			$('#ex__sandbox form .submit').fadeOut();
-		} else {
-			$('#ex__sandbox').animate({height: '75%'});
-			$('#ex__sandbox form .submit').fadeIn();
-		}
-		$('#ex__sandbox').toggleClass('expanded');
-		set_cookie('sandbox_expanded', $('#ex__sandbox').attr('class'));
-	});
+    $('#ex__sandbox h2').live('click', function() {toggle_sandbox();});
 
     $('#ex__sandbox .parameters').live('focus', function(){
         $(this).animate({width: '75%'}).parent().find('.returns').animate({width: '20%'});
@@ -89,16 +91,21 @@ $(document).ready(function(){
     });
 
     $('#ex__sandbox .parameters textarea').live('keyup', function() {
+        var value = $(this).removeClass('error').val();
+        
         try {
-            eval('var json = ' + $(this).removeClass('error').val() + ';');
-            $('#ex__sandbox .submit').show();
+            if (value.replace(/\s/gi, '') != "{}" && value.replace(/\s/gi, '') != '')
+                eval('var json = ' + value + ';');
+            $('#ex__sandbox .submit').removeClass('disabled');
         } catch(e) {
-            $('#ex__sandbox .submit').hide();
+            $('#ex__sandbox .submit').addClass('disabled');
             $(this).addClass('error');
         }
     });
 
     $('#ex__sandbox form').live('submit', function(){
+        if ($(this).find('.submit').hasClass('disabled')) return false;
+        
         var params = $('#ex__sandbox .parameters textarea').val();
         $.post(window.location, {ajax: 'runCommand', parameters: params}, function(result){
             $('#ex__sandbox .returns textarea').val(result);

@@ -206,7 +206,8 @@ body {
 }
 
 #ex__sandbox.expanded form .disabled {
-    background: #eee;
+    border: 1px #fff;
+    color: #aaa;
     cursor: default;
 }
 

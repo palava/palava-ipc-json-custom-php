@@ -5,11 +5,15 @@
 if (!$cmd) $cmd = Package::getCommand(COMMAND);
 
 if (empty($_POST['parameters'])) {
-    $box_params = '{' . NL;
-    foreach ($cmd->getParams() as $param) {
-        $box_params .= TAB . '"' . $param->getName() . '" : ,' . NL;
+    $params = $cmd->getParams();
+
+    if (!empty($params)) {
+        $box_params = '{' . NL;
+        foreach ($cmd->getParams() as $param) {
+            $box_params .= TAB . '"' . $param->getName() . '" : ,' . NL;
+        }
+        $box_params = rtrim($box_params, ',' . NL) . NL . '}';
     }
-    $box_params = rtrim($box_params, ',' . NL) . NL . '}';
     
 } else {
     $box_params = $_POST['parameters'];
@@ -35,7 +39,7 @@ if (empty($_POST['parameters'])) {
       <p class="message"></p>
       <div class="parameters clearfix">
         <label>Parameters:</label>
-        <textarea name="parameters"><?php echo $box_params; ?></textarea>
+        <textarea name="parameters"><?php echo isset($box_params) ? $box_params : ''; ?></textarea>
       </div>
       <div class="returns clearfix">
         <label>Returns:</label>

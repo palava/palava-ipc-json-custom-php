@@ -37,6 +37,7 @@ class Explorer {
     }
 
     public static function runCommand($command, $params = array()) {
+        if (!is_array($params)) $params = array();
         return self::$palava->call($command, $params);
     }
 
