@@ -171,6 +171,13 @@ class Palava {
     }
 
     /**
+     * @return PalavaModule a loaded module.
+     */
+    public function module($module_name) {
+        return $this->modules[$module_name];
+    }
+
+    /**
      * @return string the used session key
      */
     public function getSessionKey() {
