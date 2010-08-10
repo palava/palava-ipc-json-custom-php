@@ -303,99 +303,105 @@ class Palava {
 		$request[Palava::PKEY_ARGUMENTS] = $arguments;
 
         // module hook
+        $result = null;
         foreach ($this->modules as $module) {
-            $result = $module->preCall($request);
+            $r = $module->preCall($request);
 
-            if (!is_null($result)) {
-                return $result;
+            if (is_null($r)) {
+                $result = $r;
+                break;
             }
         }
 
-        // not yet connected?
-		if ($this->socket === NULL) {
-			if ($this->timeout === NULL) {
-				throw new PalavaException('Neither connect() nor connectLazily() has been called ');
-			}
-			$this->connect($this->timeout);
-		}
+        if (is_null($result)) {
 
-		// send it
-		$json = json_encode($request);
-        $size_sent = strlen($json);
-        $packets_sent = 0;
+            // not yet connected?
+            if ($this->socket === NULL) {
+                if ($this->timeout === NULL) {
+                    throw new PalavaException('Neither connect() nor connectLazily() has been called ');
+                }
+                $this->connect($this->timeout);
+            }
 
-        $call_start = microtime(true);
-        // TODO send until everything is done even if it requires multiple packets?
-		if (!@fwrite($this->socket, $json)) {
-			throw new PalavaConnectionException("cannot send request");
-		}
-        $packets_sent++;
-		if (!@fflush($this->socket)) {
-			throw new PalavaConnectionException("cannot flush request");
-		}
+            // send it
+            $json = json_encode($request);
+            $size_sent = strlen($json);
+            $packets_sent = 0;
 
-		// read the response
-		$buffer = '';
-		$json_pointer = 0;
-		$json_counter = 0;
-		$json_in_string = false;
-		$json_is_escaped = false;
-		$json_completed = false;
-        $packets_gotten = 0;
-        $buffer_size = 0;
-        $buffer_chunk_size = $this->get(Palava::CONFIG_BUFFERSIZE, Palava::DEFAULT_BUFFERSIZE);
-		while (!feof($this->socket)) {
-            $buffer .= @fread($this->socket, $buffer_chunk_size);
-            $packets_gotten++;
-            $buffer_size = strlen($buffer);
-			while ($json_pointer < $buffer_size) {
-                $current = $buffer[$json_pointer];
-				if (!$json_in_string) {
-					if ($current == '"') {
-						$json_in_string = true;
-					} else if ($current == '{') {
-						$json_counter++;
-					} else if ($current == '}') {
-						$json_counter--;
-						if ($json_counter == 0) {
-							$json_completed = true;
-							break;
-						}
-					}
-				} else {
-					if ($current == '"' && !$json_is_escaped) {
-						$json_in_string = false;
-					} else if ($current == '\\' && !$json_is_escaped) {
-						$json_is_escaped = true;
-					} else if ($json_is_escaped) {
-						$json_is_escaped = false;
-					}
-				}
-                $json_pointer++;
-			}
-			if ($json_completed) {
-				break;
-			}
-		}
-        PalavaStatistics::logCall($command, microtime(true) - $call_start, $size_sent, $packets_sent, $buffer_size, $packets_gotten);
-		if (!$json_completed) {
-			throw new PalavaConnectionException("cannot read response: ".$buffer);
-		}
+            $call_start = microtime(true);
+            // TODO send until everything is done even if it requires multiple packets?
+            if (!@fwrite($this->socket, $json)) {
+                throw new PalavaConnectionException("cannot send request");
+            }
+            $packets_sent++;
+            if (!@fflush($this->socket)) {
+                throw new PalavaConnectionException("cannot flush request");
+            }
 
-		// parse the response
-		$response = json_decode($buffer, true);
-		if (!$response) {
-			throw new PalavaParseException("cannot parse response");
-		}
+            // read the response
+            $buffer = '';
+            $json_pointer = 0;
+            $json_counter = 0;
+            $json_in_string = false;
+            $json_is_escaped = false;
+            $json_completed = false;
+            $packets_gotten = 0;
+            $buffer_size = 0;
+            $buffer_chunk_size = $this->get(Palava::CONFIG_BUFFERSIZE, Palava::DEFAULT_BUFFERSIZE);
+            while (!feof($this->socket)) {
+                $buffer .= @fread($this->socket, $buffer_chunk_size);
+                $packets_gotten++;
+                $buffer_size = strlen($buffer);
+                while ($json_pointer < $buffer_size) {
+                    $current = $buffer[$json_pointer];
+                    if (!$json_in_string) {
+                        if ($current == '"') {
+                            $json_in_string = true;
+                        } else if ($current == '{') {
+                            $json_counter++;
+                        } else if ($current == '}') {
+                            $json_counter--;
+                            if ($json_counter == 0) {
+                                $json_completed = true;
+                                break;
+                            }
+                        }
+                    } else {
+                        if ($current == '"' && !$json_is_escaped) {
+                            $json_in_string = false;
+                        } else if ($current == '\\' && !$json_is_escaped) {
+                            $json_is_escaped = true;
+                        } else if ($json_is_escaped) {
+                            $json_is_escaped = false;
+                        }
+                    }
+                    $json_pointer++;
+                }
+                if ($json_completed) {
+                    break;
+                }
+            }
+            PalavaStatistics::logCall($command, microtime(true) - $call_start, $size_sent, $packets_sent, $buffer_size, $packets_gotten);
+            if (!$json_completed) {
+                throw new PalavaConnectionException("cannot read response: ".$buffer);
+            }
 
-		// check the right protocol
-		if ($response[Palava::PKEY_PROTOCOL] != Palava::PROTOCOL_KEY) {
-			throw new PalavaParseException("wrong protocol");
-		}
+            // parse the response
+            $response = json_decode($buffer, true);
+            if (!$response) {
+                throw new PalavaParseException("cannot parse response");
+            }
 
-        // module hook
-        foreach ($this->modules as $module) {
-            $result = $module->postCall($request, $response);
+            // check the right protocol
+            if ($response[Palava::PKEY_PROTOCOL] != Palava::PROTOCOL_KEY) {
+                throw new PalavaParseException("wrong protocol");
+            }
+
+            // module hook
+            foreach ($this->modules as $module) {
+                $result = $module->postCall($request, $response);
+            }
+
         }
 
 		// set new session id if available
