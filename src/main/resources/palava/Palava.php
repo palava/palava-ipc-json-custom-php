@@ -60,6 +60,19 @@ class Palava {
     const DEFAULT_COOKIEPATH = '/';
     const DEFAULT_MODULEDIRECTORY = 'modules';
 
+    private $meta_server_keys = array(
+        'REQUEST_METHOD',
+        'REQUEST_URI',
+        // remote address will be added by getUserIp()
+        'HTTP_HOST',
+        'HTTP_USER_AGENT',
+        'HTTP_ACCEPT',
+        'HTTP_ACCEPT_LANGUAGE',
+        'HTTP_ACCEPT_ENCODING',
+        'HTTP_ACCEPT_CHARSET'
+        // https? will be added by isHttpsOn()
+    );
+
 
     // configuration options
     private $config = array();
@@ -263,13 +276,34 @@ class Palava {
 	}
 
     private function getUserIp() {
-        if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            return $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else if (isset($_SERVER['HTTP_X_REAL_IP']) && !empty($_SERVER['HTTP_X_REAL_IP'])) {
+        if (isset($_SERVER['HTTP_X_REAL_IP']) && !empty($_SERVER['HTTP_X_REAL_IP'])) {
             return $_SERVER['HTTP_X_REAL_IP'];
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
         } else {
             return $_SERVER['REMOTE_ADDR'];
         }
+    }
+
+    private function isHttpsOn() {
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) == 'https') {
+            return true;
+        } else {
+            return isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on';
+        }
+    }
+
+    private function generateMetaInformations() {
+        $meta = array();
+        
+        foreach ($this->meta_server_keys as $key) {
+            $meta[$key] = $_SERVER[$key];
+        }
+
+        $meta['REMOTE_ADDR'] = $this->getUserIp();
+        $meta['HTTPS'] = $this->isHttpsOn();
+
+        return $meta;
     }
 
 	public function call($command, $arguments = null) {
@@ -296,10 +330,7 @@ class Palava {
 		$request[Palava::PKEY_PROTOCOL] = Palava::PROTOCOL_KEY;
 		$request[Palava::PKEY_SESSION] = $this->sessionId;
 		$request[Palava::PKEY_COMMAND] = $command;
-		$request[Palava::PKEY_META] = array(
-            'identifier' => $this->getUserIp(),
-            'request_uri' => $request_uri
-        );
+		$request[Palava::PKEY_META] = $this->generateMetaInformations();
 		$request[Palava::PKEY_ARGUMENTS] = $arguments;
 
         // module hook
