@@ -69,8 +69,9 @@ class Palava {
         'HTTP_ACCEPT',
         'HTTP_ACCEPT_LANGUAGE',
         'HTTP_ACCEPT_ENCODING',
-        'HTTP_ACCEPT_CHARSET'
+        'HTTP_ACCEPT_CHARSET',
         // https? will be added by isHttpsOn()
+        'HTTP_REFERER',
     );
 
 
@@ -297,7 +298,11 @@ class Palava {
         $meta = array();
         
         foreach ($this->meta_server_keys as $key) {
-            $meta[$key] = $_SERVER[$key];
+            if (!isset($_SERVER[$key])) {
+                $meta[$key] = '';
+            } else {
+                $meta[$key] = $_SERVER[$key];
+            }
         }
 
         $meta['REMOTE_ADDR'] = $this->getUserIp();
