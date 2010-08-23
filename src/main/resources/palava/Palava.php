@@ -36,7 +36,7 @@ require('AbstractPalavaModule.php');
 class Palava {
 
 	// protocol constants
-	const PROTOCOL_KEY = "palava2/1.0";
+	const PROTOCOL_KEY = "palava2/1.1";
 
 	const PKEY_PROTOCOL = "protocol";
 	const PKEY_SESSION = "session";
