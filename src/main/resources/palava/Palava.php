@@ -322,14 +322,6 @@ class Palava {
 			throw new PalavaArgumentsException("arguments invalid; array expected");
 		}
 
-        // request uri
-        if (array_key_exists('HTTPS', $_SERVER) && strtolower($_SERVER['HTTPS']) == 'on') {
-            $request_uri = 'https://';
-        } else {
-            $request_uri = 'http://';
-        }
-        $request_uri .= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-
 		// build request
 		$request = array();
 		$request[Palava::PKEY_PROTOCOL] = Palava::PROTOCOL_KEY;
@@ -435,7 +427,10 @@ class Palava {
 
             // module hook
             foreach ($this->modules as $module) {
-                $response = $module->postCall($request, $response);
+                $result = $module->postCall($request, $response);
+                if (!is_null($result)) {
+                    $response = $result;
+                }
             }
 
         }
