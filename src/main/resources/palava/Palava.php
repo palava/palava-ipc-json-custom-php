@@ -339,17 +339,17 @@ class Palava {
 		$request[Palava::PKEY_ARGUMENTS] = $arguments;
 
         // module hook
-        $result = null;
+        $response = null;
         foreach ($this->modules as $module) {
             $r = $module->preCall($request);
 
-            if (is_null($r)) {
-                $result = $r;
+            if (!is_null($r)) {
+                $response = $r;
                 break;
             }
         }
 
-        if (is_null($result)) {
+        if (is_null($response)) {
 
             // not yet connected?
             if ($this->socket === NULL) {
@@ -435,7 +435,7 @@ class Palava {
 
             // module hook
             foreach ($this->modules as $module) {
-                $result = $module->postCall($request, $response);
+                $response = $module->postCall($request, $response);
             }
 
         }
