@@ -6,7 +6,10 @@ class Explorer {
         'port' => 2001,
         'packages' => array('de.cosmocode')
     );
-    
+
+    /**
+     * @var Palava
+     */
     private static $palava = null;
     
     public static function init($config = array()) {
@@ -14,7 +17,15 @@ class Explorer {
 
         // connect to the backend
         self::$palava = new Palava(self::$config['host'], self::$config['port']);
-        self::$palava->connect();
+
+        // set palavaConf
+        if (isset($config['palavaConf'])) {
+            foreach ($config['palavaConf'] as $key => $value) {
+                self::$palava->set($key, $value);
+            }
+        }
+
+        self::$palava->connectLazily();
     
         // get a list of all commands
         $result = self::$palava->call(
