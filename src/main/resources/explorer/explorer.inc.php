@@ -3,8 +3,8 @@
 // application-infos
 define('EXPLORER_NAME', 'Command EXplorer');
 
-define('DS', DIRECTORY_SEPARATOR);
-define('ROOT', dirname(__FILE__) . DS);
+if (!defined('DS')) define('DS', DIRECTORY_SEPARATOR);
+if (!defined('ROOT')) define('ROOT', dirname(__FILE__) . DS);
 
 define('NL',  "\n");
 define('TAB', "    ");
