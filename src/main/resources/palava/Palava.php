@@ -110,18 +110,18 @@ class Palava {
         if ($session_id === NULL) {
             $skey = $this->getSessionKey();
 		    if (array_key_exists($skey, $_COOKIE)) {
-			    $this->sessionId = $_COOKIE[$skey];
+			    $this->setSessionId($_COOKIE[$skey]);
 		    }
 		    // GET takes precedence over COOKIE
             if (array_key_exists($skey, $_GET)) {
-                $this->sessionId = $_GET[$skey];
+                $this->setSessionId($_GET[$skey]);
             }
             // POST takes precedence over GET
             if (array_key_exists($skey, $_POST)) {
-                $this->sessionId = $_POST[$skey];
+                $this->setSessionId($_POST[$skey]);
             }
         } else {
-            $this->sessionId = $session_id;
+            $this->setSessionId($session_id);
         }
 
         // load modules
@@ -213,6 +213,8 @@ class Palava {
      */
     public function setSessionId($session_id) {
         $this->sessionId = $session_id;
+        $cookie_path = $this->get(Palava::CONFIG_COOKIEPATH, Palava::DEFAULT_COOKIEPATH);
+        setcookie($this->getSessionKey(), $session_id, time() + 10*356*24*60*60, $cookie_path); // should not expire in a relevant future
     }
 
 	/**
@@ -437,9 +439,7 @@ class Palava {
 
 		// set new session id if available
 		if ($this->sessionId != $response[Palava::PKEY_SESSION]) {
-			$this->sessionId = $response[Palava::PKEY_SESSION];
-            $cookie_path = $this->get(Palava::CONFIG_COOKIEPATH, Palava::DEFAULT_COOKIEPATH);
-			setcookie($this->getSessionKey(), $this->getSessionId(), time() + 10*356*24*60*60, $cookie_path); // should not expire in a relevant future
+			$this->setSessionId($response[Palava::PKEY_SESSION]);
 		}
 
 		// return result
