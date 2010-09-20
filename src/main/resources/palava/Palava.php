@@ -54,11 +54,13 @@ class Palava {
     const CONFIG_SESSIONKEY = 'palava.sessionKey';
     const CONFIG_COOKIEPATH = 'palava.cookiePath';
     const CONFIG_MODULEDIRECTORY = 'palava.moduleDirectory';
+    const CONFIG_JAVAEXCEPTIONS = "palava.javaExceptions";
 
     const DEFAULT_BUFFERSIZE = 8192;
     const DEFAULT_SESSIONKEY = 'psessid';
     const DEFAULT_COOKIEPATH = '/';
     const DEFAULT_MODULEDIRECTORY = 'modules';
+    const DEFAULT_JAVAEXCEPTIONS = true;
 
     private $meta_server_keys = array(
         'REQUEST_METHOD',
@@ -446,9 +448,32 @@ class Palava {
 		if (array_key_exists(Palava::PKEY_RESULT, $response)) {
 			return $response[Palava::PKEY_RESULT];
 		} else {
-			throw new PalavaExecutionException($response[Palava::PKEY_EXCEPTION]);
+            $exceptionClassName = 'PalavaExecutionException';
+            if ($this->get(self::CONFIG_JAVAEXCEPTIONS, self::DEFAULT_JAVAEXCEPTIONS)) {
+                // define super exceptions
+                $superName = null;
+                foreach ($response[Palava::PKEY_EXCEPTION]['superNames'] as $name) {
+                    $name = str_replace('.', '_', $name);
+                    $this->defineClass($name, $superName);
+                    $superName = $name;
+                }
+
+                $exceptionClassName = str_replace('.', '_', $response[Palava::PKEY_EXCEPTION]['name']);
+                $this->defineClass($exceptionClassName, $name);
+            }
+            throw new $exceptionClassName($response[Palava::PKEY_EXCEPTION]);
 		}
 	}
+
+    private function defineClass($className, $superClass) {
+        if ($superClass == null) {
+            $superClass = 'PalavaExecutionException';
+        }
+        if (!class_exists($className)) {
+            $classDef = "class $className extends $superClass {}";
+            eval($classDef);
+        }
+    }
 
 	public function disconnect() {
 		// not connected? nothing to do!
