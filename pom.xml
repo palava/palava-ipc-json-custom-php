@@ -15,7 +15,7 @@
     <version>2.2-SNAPSHOT</version>
 
     <scm>
-        <developerConnection>scm:svn:https://palava.svn.cosmocode.de/palava-ipc-json-custom-php/trunk</developerConnection>
+        <developerConnection>scm:git:git@github.com:palava/${project.artifactId}.git</developerConnection>
     </scm>
 
     <dependencies>
