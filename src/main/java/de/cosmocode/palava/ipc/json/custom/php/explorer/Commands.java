@@ -53,8 +53,8 @@ public final class Commands implements IpcCommand {
 
     private static final Predicate<Class<?>> FILTER = 
             Reflection.isSubtypeOf(IpcCommand.class).and(
-            Reflection.isInterface().not()).and(
-            Reflection.isAbstract().not()
+            Reflection.isInterface().negate()).and(
+            Reflection.isAbstract().negate()
         );
     
     private final Provider<Renderer> rendererProvider;
