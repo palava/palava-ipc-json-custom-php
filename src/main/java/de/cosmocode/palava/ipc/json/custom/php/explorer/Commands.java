@@ -51,7 +51,7 @@ import de.cosmocode.rendering.Renderer;
 @Singleton
 public final class Commands implements IpcCommand {
 
-    private static final Predicate<Class<?>> FILTER = 
+    private final Predicate<Class<?>> filter = 
             Reflection.isSubtypeOf(IpcCommand.class).and(
             Reflection.isInterface().negate()).and(
             Reflection.isAbstract().negate()
@@ -66,22 +66,19 @@ public final class Commands implements IpcCommand {
 
     @Override
     public void execute(IpcCall call, Map<String, Object> result) throws IpcCommandExecutionException {
-        final UtilityList<Object> packages = call.getArguments().getList("packages");
+        final UtilityList<Object> packageNames = call.getArguments().getList("packages");
 
         final Renderer renderer = rendererProvider.get();
 
-        final Classpath cp = Reflection.defaultClasspath();
-        final Packages pkgs = cp.restrictTo(Iterables.transform(packages, Functions.toStringFunction()));
+        final Classpath classpath = Reflection.defaultClasspath();
+        final Function<Object, String> toString = Functions.toStringFunction();
+        final Packages packages = classpath.restrictTo(Iterables.transform(packageNames, toString));
+        final Iterable<Class<? extends IpcCommand>> commands = Iterables.transform(
+            packages.filter(filter),
+            Reflection.asSubclass(IpcCommand.class)
+        );
 
-        renderer.list();
-        
-        final Function<Class<?>, Class<? extends IpcCommand>> asSubClass = Reflection.asSubclass(IpcCommand.class);
-        for (Class<? extends IpcCommand> command : Iterables.transform(pkgs.filter(FILTER), asSubClass)) {
-            renderer.value(command, CommandRenderer.INSTANCE);
-        }
-        
-        renderer.endList();
-
+        renderer.value(commands, CommandRenderer.INSTANCE);
         result.put("commands", renderer.build());
     }
     
