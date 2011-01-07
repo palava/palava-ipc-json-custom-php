@@ -36,7 +36,7 @@ import de.cosmocode.palava.ipc.IpcCommand.Description;
 import de.cosmocode.palava.ipc.IpcCommand.Param;
 import de.cosmocode.palava.ipc.IpcCommand.Return;
 import de.cosmocode.palava.ipc.IpcCommandExecutionException;
-import de.cosmocode.palava.ipc.cache.Cached;
+import de.cosmocode.palava.ipc.cache.analyzer.TimeCached;
 import de.cosmocode.rendering.Renderer;
 
 /**
@@ -47,7 +47,7 @@ import de.cosmocode.rendering.Renderer;
 @Description("Returns a list of all commands available in the JVM.")
 @Param(name = "packages", description = "a list of packages to search in")
 @Return(name = "commands", description = "a list of all commands")
-@Cached
+@TimeCached
 @Singleton
 public final class Commands implements IpcCommand {
 
