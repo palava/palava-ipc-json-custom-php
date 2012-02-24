@@ -5,14 +5,14 @@
     <parent>
         <groupId>de.cosmocode.palava</groupId>
         <artifactId>palava-parent</artifactId>
-        <version>2.6.0</version>
+        <version>2.6.2</version>
     </parent>
 
     <name>Palava IPC JSON Custom PHP</name>
 
     <groupId>de.cosmocode.palava</groupId>
     <artifactId>palava-ipc-json-custom-php</artifactId>
-    <version>2.3-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
 
     <scm>
         <developerConnection>scm:git:git@github.com:palava/${project.artifactId}.git</developerConnection>
@@ -32,19 +32,19 @@
         <dependency>
             <groupId>de.cosmocode.palava</groupId>
             <artifactId>palava-ipc-json-custom</artifactId>
-            <version>[2.1,3)</version>
+            <version>[2.3,3)</version>
             <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>de.cosmocode.palava</groupId>
             <artifactId>palava-ipc</artifactId>
-            <version>[1,2)</version>
+            <version>[2.0,3)</version>
         </dependency>
         <dependency>
             <groupId>de.cosmocode.palava</groupId>
             <artifactId>palava-ipc-cache</artifactId>
-            <version>[2,3)</version>
+            <version>[3.0,4)</version>
         </dependency>
         <dependency>
             <groupId>de.cosmocode</groupId>
