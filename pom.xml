@@ -27,15 +27,26 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>de.cosmocode</groupId>
+            <artifactId>cosmocode-commons</artifactId>
+            <version>[1.20,2)</version>
+        </dependency>
+        <dependency>
+            <groupId>de.cosmocode</groupId>
+            <artifactId>cosmocode-rendering</artifactId>
+            <version>[1.2.1,2)</version>
+        </dependency>
 
         <!-- marker for the corresponding version -->
         <dependency>
             <groupId>de.cosmocode.palava</groupId>
             <artifactId>palava-ipc-json-custom</artifactId>
-            <version>[2.3,3)</version>
+            <version>[3.0-SNAPSHOT,3.1)</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- palava dependencies -->
         <dependency>
             <groupId>de.cosmocode.palava</groupId>
             <artifactId>palava-ipc</artifactId>
@@ -45,16 +56,6 @@
             <groupId>de.cosmocode.palava</groupId>
             <artifactId>palava-ipc-cache</artifactId>
             <version>[3.0,4)</version>
-        </dependency>
-        <dependency>
-            <groupId>de.cosmocode</groupId>
-            <artifactId>cosmocode-commons</artifactId>
-            <version>[1.9,2)</version>
-        </dependency>
-        <dependency>
-            <groupId>de.cosmocode</groupId>
-            <artifactId>cosmocode-rendering</artifactId>
-            <version>[1,2)</version>
         </dependency>
     </dependencies>
 
