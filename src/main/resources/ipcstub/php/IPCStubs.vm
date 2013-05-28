@@ -2,7 +2,7 @@ $generator.includeFile("php_header")
 
 #foreach($rootPkg in $generator.getRootPackages())
 #set ($name = $rootPkg.getFullName().replace(".", "__"))
-require('IPCStub_$generator.getName()___${name}.php');
+require_once('IPCStub_$generator.getName()___${name}.php');
 #end
 
 class IPCStubs_$generator.getName() {
