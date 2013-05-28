@@ -2,7 +2,7 @@ $generator.includeFile("php_header")
 
 #foreach($pkg in $args.getPackages())
 #set ($name = $pkg.getFullName().replace(".", "__"))
-require('IPCStub_$generator.getName()___${name}.php');
+require_once('IPCStub_$generator.getName()___${name}.php');
 #end
 
 // an impossible value for evaluate optional parameters
