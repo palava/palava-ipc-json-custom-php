@@ -15,7 +15,7 @@
     <version>1.5-SNAPSHOT</version>
 
     <scm>
-        <developerConnection>scm:svn:https://palava.svn.cosmocode.de/palava-ipc-json-custom-php/tags/1.4.2</developerConnection>
+        <developerConnection>scm:git:git@github.com:palava/palava-ipc-json-custom-php.git</developerConnection>
     </scm>
 
     <dependencies>
